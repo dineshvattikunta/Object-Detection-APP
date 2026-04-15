@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Image Detection — VisionAI</title>
+<link rel="stylesheet" href="css/style.css"/>
+<link rel="stylesheet" href="css/animations.css"/>
+</head>
+<body>
+<div class="shell">
+<header class="topbar">
+  <a href="index.html" class="t-logo"><div class="logo-gem">V</div><span class="logo-text">VisionAI</span></a>
+  <div class="t-right">
+    <span class="gpu-pill" id="gpu-badge"><span class="g-dot"></span>Checking…</span>
+    <button class="icon-btn" id="theme-btn">☀️</button>
+  </div>
+</header>
+<nav class="sidebar">
+  <span class="s-label">Detection</span>
+  <a href="index.html" class="nav-link"><span class="n-ico">⊞</span>Dashboard</a>
+  <a href="image.html" class="nav-link active"><span class="n-ico">🖼</span>Image Detection</a>
+  <a href="webcam.html" class="nav-link"><span class="n-ico">📷</span>Live Webcam</a>
+  <a href="batch.html" class="nav-link"><span class="n-ico">📦</span>Batch Mode</a>
+  <div class="s-divider"></div>
+  <span class="s-label">Reference</span>
+  <a href="models.html" class="nav-link"><span class="n-ico">🧠</span>Models<span class="n-badge">4</span></a>
+  <a href="about.html" class="nav-link"><span class="n-ico">ℹ</span>About</a>
+  <div class="s-foot">
+    <div class="s-row"><span class="s-key">Detections</span><span class="s-val" id="sb-total">0</span></div>
+    <div class="s-row"><span class="s-key">Frames</span><span class="s-val" id="sb-frames">0</span></div>
+  </div>
+</nav>
+<main class="main">
+  <div class="ph fade-up">
+    <div>
+      <div class="breadcrumb"><span>VisionAI</span> / <span class="bc">Image Detection</span></div>
+      <h1>Image Detection</h1>
+      <p>Upload any image — lions, cars, phones, food, anything. YOLOv8X gives maximum accuracy.</p>
+    </div>
+    <button class="btn btn-main btn-lg" id="detect-btn" disabled>Detect Objects</button>
+  </div>
+
+  <div class="ctrl-bar mb-2 fade-up">
+    <div class="ctrl-group">
+      <span class="ctrl-lbl">Model</span>
+      <select id="model-select"><option>Loading…</option></select>
+    </div>
+    <div class="ctrl-group">
+      <span class="ctrl-lbl">Confidence</span>
+      <input type="range" id="conf-slider" min="0.01" max="0.99" step="0.01" value="0.25"/>
+      <span class="sv" id="conf-val">25%</span>
+    </div>
+    <div class="ctrl-group">
+      <span class="ctrl-lbl">IOU</span>
+      <input type="range" id="iou-slider" min="0.01" max="0.99" step="0.01" value="0.40"/>
+      <span class="sv" id="iou-val">40%</span>
+    </div>
+  </div>
+
+  <div class="drop-zone mb-2 fade-up" id="drop-zone">
+    <span class="dz-icon">⬆</span>
+    <h3>Drop any image here</h3>
+    <p>Lions, deer, cars, phones, food — anything works</p>
+    <small>JPG · PNG · WEBP · Max 10 MB</small>
+    <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp" style="display:none;"/>
+  </div>
+
+  <div id="results-section" class="hidden">
+    <div id="results-inner">
+      <div class="sum-bar mb-2">
+        <span class="sum-text" id="sum-text">—</span>
+        <div class="act-row">
+          <button class="btn btn-ghost btn-sm" id="dl-btn">⬇ Download</button>
+          <button class="btn btn-ghost btn-sm" id="csv-btn">📄 CSV</button>
+          <button class="btn btn-ghost btn-sm" id="json-btn">{ } JSON</button>
+        </div>
+      </div>
+      <div class="img-grid mb-2">
+        <div class="img-pane">
+          <img id="img-original" src="" alt="Original"/>
+          <div class="img-foot"><span class="img-lbl">Original</span></div>
+        </div>
+        <div class="img-pane">
+          <img id="img-annotated" src="" alt="Detected"/>
+          <div class="img-foot"><span class="img-lbl">Detected</span></div>
+        </div>
+      </div>
+      <div class="sec-h">Detections</div>
+      <div class="det-list" id="det-list"></div>
+    </div>
+  </div>
+</main>
+</div>
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/image.js"></script>
+</body>
+</html>

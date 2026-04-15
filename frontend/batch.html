@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Batch Mode — VisionAI</title>
+<link rel="stylesheet" href="css/style.css"/>
+<link rel="stylesheet" href="css/animations.css"/>
+</head>
+<body>
+<div class="shell">
+<header class="topbar">
+  <a href="index.html" class="t-logo"><div class="logo-gem">V</div><span class="logo-text">VisionAI</span></a>
+  <div class="t-right">
+    <span class="gpu-pill" id="gpu-badge"><span class="g-dot"></span>Checking…</span>
+    <button class="icon-btn" id="theme-btn">☀️</button>
+  </div>
+</header>
+<nav class="sidebar">
+  <span class="s-label">Detection</span>
+  <a href="index.html" class="nav-link"><span class="n-ico">⊞</span>Dashboard</a>
+  <a href="image.html" class="nav-link"><span class="n-ico">🖼</span>Image Detection</a>
+  <a href="webcam.html" class="nav-link"><span class="n-ico">📷</span>Live Webcam</a>
+  <a href="batch.html" class="nav-link active"><span class="n-ico">📦</span>Batch Mode</a>
+  <div class="s-divider"></div>
+  <span class="s-label">Reference</span>
+  <a href="models.html" class="nav-link"><span class="n-ico">🧠</span>Models<span class="n-badge">4</span></a>
+  <a href="about.html" class="nav-link"><span class="n-ico">ℹ</span>About</a>
+  <div class="s-foot">
+    <div class="s-row"><span class="s-key">Detections</span><span class="s-val" id="sb-total">0</span></div>
+    <div class="s-row"><span class="s-key">Frames</span><span class="s-val" id="sb-frames">0</span></div>
+  </div>
+</nav>
+<main class="main">
+  <div class="ph fade-up">
+    <div>
+      <div class="breadcrumb"><span>VisionAI</span> / <span class="bc">Batch Mode</span></div>
+      <h1>Batch Detection</h1>
+      <p>Upload up to 50 images — all processed sequentially with GPU acceleration.</p>
+    </div>
+    <div class="flex gap-1">
+      <button class="btn btn-main" id="run-btn" disabled>▶ Run All</button>
+      <button class="btn btn-ghost" id="clear-btn">Clear</button>
+    </div>
+  </div>
+
+  <div class="ctrl-bar mb-2 fade-up">
+    <div class="ctrl-group"><span class="ctrl-lbl">Model</span><select id="model-select"><option>Loading…</option></select></div>
+    <div class="ctrl-group">
+      <span class="ctrl-lbl">Confidence</span>
+      <input type="range" id="conf-slider" min="0.01" max="0.99" step="0.01" value="0.25"/>
+      <span class="sv" id="conf-val">25%</span>
+    </div>
+    <div class="ctrl-group">
+      <span class="ctrl-lbl">IOU</span>
+      <input type="range" id="iou-slider" min="0.01" max="0.99" step="0.01" value="0.40"/>
+      <span class="sv" id="iou-val">40%</span>
+    </div>
+  </div>
+
+  <div class="drop-zone mb-2 fade-up" id="drop-zone">
+    <span class="dz-icon">📦</span>
+    <h3>Drop multiple images here</h3>
+    <p>or click to select multiple files</p>
+    <small>JPG · PNG · WEBP · Max 10 MB each · Up to 50 images</small>
+    <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp" multiple style="display:none;"/>
+  </div>
+
+  <div id="q-sec" class="hidden">
+    <div class="sec-h">Queue <span id="q-count" class="text-xs t3" style="text-transform:none;letter-spacing:0;font-weight:400;"></span></div>
+    <div style="height:5px;background:var(--bg-3);border-radius:3px;margin-bottom:1rem;overflow:hidden;border:1px solid var(--border);">
+      <div id="prog" style="height:100%;background:var(--grad-main);border-radius:3px;width:0%;transition:width 0.35s;"></div>
+    </div>
+    <div id="q-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:0.75rem;"></div>
+  </div>
+
+  <div id="b-results" class="hidden mt-3">
+    <div class="sum-bar mb-2">
+      <span class="sum-text" id="b-sum">—</span>
+      <button class="btn btn-ghost btn-sm" id="exp-csv">📄 Export CSV</button>
+    </div>
+    <div class="t-wrap">
+      <table>
+        <thead><tr><th>File</th><th>Objects</th><th>Top Class</th><th>Time</th><th>Status</th></tr></thead>
+        <tbody id="b-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+</div>
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script>
+(function(){
+  let files=[],results=[],busy=false;
+  const dz=document.getElementById('drop-zone'),fi=document.getElementById('file-input');
+  const runBtn=document.getElementById('run-btn'),clearBtn=document.getElementById('clear-btn');
+  const confSl=document.getElementById('conf-slider'),confVl=document.getElementById('conf-val');
+  const iouSl=document.getElementById('iou-slider'),iouVl=document.getElementById('iou-val');
+  const mdSel=document.getElementById('model-select');
+  const qSec=document.getElementById('q-sec'),qGrid=document.getElementById('q-grid'),qCnt=document.getElementById('q-count');
+  const prog=document.getElementById('prog'),bRes=document.getElementById('b-results');
+  const bSum=document.getElementById('b-sum'),bTb=document.getElementById('b-tbody');
+
+  UI.initNav();UI.initTheme();UI.initGpuBadge();UI.initSidebarStats();
+  API.getModels().then(d=>{mdSel.innerHTML='';d.models.forEach(m=>{const o=document.createElement('option');o.value=m.name;o.textContent=m.name;if(m.name==='yolov8x')o.selected=true;mdSel.appendChild(o);});}).catch(()=>{});
+  confSl.addEventListener('input',()=>confVl.textContent=`${Math.round(confSl.value*100)}%`);
+  iouSl.addEventListener('input',()=>iouVl.textContent=`${Math.round(iouSl.value*100)}%`);
+  dz.addEventListener('click',()=>fi.click());
+  fi.addEventListener('change',()=>add(Array.from(fi.files)));
+  dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('dragover');});
+  dz.addEventListener('dragleave',()=>dz.classList.remove('dragover'));
+  dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('dragover');add(Array.from(e.dataTransfer.files));});
+  runBtn.addEventListener('click',runAll);
+  clearBtn.addEventListener('click',clearAll);
+  document.getElementById('exp-csv').addEventListener('click',expCsv);
+
+  function add(nf){
+    const ok=['image/jpeg','image/png','image/webp'];
+    nf.forEach(f=>{
+      if(!ok.includes(f.type)){UI.showToast(`${f.name}: bad format`,'warning');return;}
+      if(f.size>10*1024*1024){UI.showToast(`${f.name}: too large`,'warning');return;}
+      if(files.length>=50){UI.showToast('Max 50 images','warning');return;}
+      files.push(f);
+    });
+    renderQ();
+    runBtn.disabled=files.length===0;
+    qSec.classList.toggle('hidden',files.length===0);
+    qCnt.textContent=`(${files.length} file${files.length!==1?'s':''})`;
+  }
+
+  function renderQ(){
+    qGrid.innerHTML='';
+    files.forEach((f,i)=>{
+      const r=new FileReader();
+      r.onload=e=>{
+        const c=document.createElement('div');c.id=`qc-${i}`;c.className='card';
+        c.style='padding:0.6rem;text-align:center;';
+        c.innerHTML=`<img src="${e.target.result}" style="width:100%;height:105px;object-fit:cover;border-radius:8px;margin-bottom:0.35rem;"/><div style="font-size:0.65rem;color:var(--t3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${f.name}</div><div id="qs-${i}" style="font-size:0.68rem;color:var(--t3);margin-top:0.2rem;">Queued</div>`;
+        qGrid.appendChild(c);
+      };
+      r.readAsDataURL(f);
+    });
+  }
+
+  async function runAll(){
+    if(busy)return;busy=true;results=[];
+    runBtn.disabled=true;runBtn.innerHTML='<span class="spinner"></span> Processing…';
+    bRes.classList.add('hidden');bTb.innerHTML='';prog.style.width='0%';
+    for(let i=0;i<files.length;i++){
+      const st=document.getElementById(`qs-${i}`),cd=document.getElementById(`qc-${i}`);
+      if(st){st.textContent='Running…';st.style.color='#a5b4fc';}
+      if(cd) cd.style.borderColor='rgba(99,102,241,0.4)';
+      try{
+        const d=await API.detectImage(files[i],parseFloat(confSl.value),parseFloat(iouSl.value),mdSel.value);
+        const top=d.detections[0]?.class_name||'—';
+        results.push({name:files[i].name,count:d.total_count,top,ms:d.inference_ms,ok:true,dets:d.detections});
+        if(st){st.textContent=`✓ ${d.total_count} found`;st.style.color='#10b981';}
+        if(cd) cd.style.borderColor='rgba(16,185,129,0.4)';
+      }catch{
+        results.push({name:files[i].name,count:0,top:'—',ms:0,ok:false,dets:[]});
+        if(st){st.textContent='✕ Failed';st.style.color='#ef4444';}
+      }
+      prog.style.width=`${((i+1)/files.length)*100}%`;
+    }
+    const tot=results.reduce((s,r)=>s+r.count,0);
+    const avg=(results.reduce((s,r)=>s+r.ms,0)/results.length).toFixed(0);
+    bSum.innerHTML=`<strong>${files.length}</strong> images · <strong>${tot}</strong> objects · avg <strong>${avg}ms</strong>`;
+    bTb.innerHTML=results.map(r=>`<tr><td>${r.name}</td><td>${r.count}</td><td>${r.top}</td><td>${Math.round(r.ms)}ms</td><td style="color:${r.ok?'#10b981':'#ef4444'};">${r.ok?'✓ OK':'✕ Error'}</td></tr>`).join('');
+    bRes.classList.remove('hidden');
+    busy=false;runBtn.disabled=false;runBtn.textContent='▶ Run All';
+    UI.showToast(`Done — ${results.filter(r=>r.ok).length}/${files.length} succeeded`,'success');
+  }
+
+  function clearAll(){
+    files=[];results=[];qGrid.innerHTML='';qSec.classList.add('hidden');
+    bRes.classList.add('hidden');runBtn.disabled=true;prog.style.width='0%';fi.value='';
+  }
+
+  function expCsv(){
+    const rows=['file,class,confidence,x1,y1,x2,y2'];
+    results.forEach(r=>r.dets.forEach(d=>rows.push(`${r.name},${d.class_name},${d.confidence},${d.x1},${d.y1},${d.x2},${d.y2}`)));
+    const blob=new Blob([rows.join('\n')],{type:'text/csv'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='batch_results.csv';
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    UI.showToast('CSV exported!','success');
+  }
+})();
+</script>
+</body>
+</html>

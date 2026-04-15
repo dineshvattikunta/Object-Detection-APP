@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>VisionAI — Universal Object Detection</title>
+<link rel="stylesheet" href="css/style.css"/>
+<link rel="stylesheet" href="css/animations.css"/>
+</head>
+<body>
+<div class="shell">
+
+<header class="topbar">
+  <a href="index.html" class="t-logo">
+    <div class="logo-gem">V</div>
+    <span class="logo-text">VisionAI</span>
+  </a>
+  <div class="t-right">
+    <span class="gpu-pill" id="gpu-badge"><span class="g-dot"></span>Checking…</span>
+    <button class="icon-btn" id="theme-btn" title="Toggle theme">☀️</button>
+  </div>
+</header>
+
+<nav class="sidebar">
+  <span class="s-label">Detection</span>
+  <a href="index.html" class="nav-link active"><span class="n-ico">⊞</span>Dashboard</a>
+  <a href="image.html" class="nav-link"><span class="n-ico">🖼</span>Image Detection</a>
+  <a href="webcam.html" class="nav-link"><span class="n-ico">📷</span>Live Webcam</a>
+  <a href="batch.html" class="nav-link"><span class="n-ico">📦</span>Batch Mode</a>
+  <div class="s-divider"></div>
+  <span class="s-label">Reference</span>
+  <a href="models.html" class="nav-link"><span class="n-ico">🧠</span>Models<span class="n-badge">4</span></a>
+  <a href="about.html" class="nav-link"><span class="n-ico">ℹ</span>About</a>
+  <div class="s-foot">
+    <div class="s-row"><span class="s-key">Detections</span><span class="s-val" id="sb-total">0</span></div>
+    <div class="s-row"><span class="s-key">Frames</span><span class="s-val" id="sb-frames">0</span></div>
+  </div>
+</nav>
+
+<main class="main">
+
+  <!-- Hero -->
+  <div class="dash-hero fade-up">
+    <div class="hero-badge"><span class="hb-dot"></span>YOLOv8X · CUDA · Universal Detection</div>
+    <h1>Detect Anything.<br/>In Real Time.</h1>
+    <p>Powered by YOLOv8 Extra Large. Detects lions, deer, phones, pens, vehicles, people — any object in the world. GPU-accelerated on your RTX 3050.</p>
+    <div class="hero-btns">
+      <a href="image.html" class="btn btn-main btn-lg">🖼 Detect Image</a>
+      <a href="webcam.html" class="btn btn-green btn-lg">📷 Live Webcam</a>
+      <a href="batch.html" class="btn btn-outline btn-lg">📦 Batch Mode</a>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="sec-h">Live Session Stats</div>
+  <div class="stats-row stagger mb-3">
+    <div class="card s-tile" style="--tile-grad:linear-gradient(135deg,#6366f1,#8b5cf6);--tile-glow:rgba(99,102,241,0.1);">
+      <div class="tl">Total Detections</div>
+      <div class="tv" id="stat-total">0</div>
+      <div class="ts">objects found this session</div>
+    </div>
+    <div class="card s-tile" style="--tile-grad:linear-gradient(135deg,#10b981,#06b6d4);--tile-glow:rgba(16,185,129,0.1);">
+      <div class="tl">Top Class</div>
+      <div class="tv" id="stat-class" style="font-size:1.1rem;padding-top:4px;">—</div>
+      <div class="ts">most detected object</div>
+    </div>
+    <div class="card s-tile" style="--tile-grad:linear-gradient(135deg,#f59e0b,#ec4899);--tile-glow:rgba(245,158,11,0.1);">
+      <div class="tl">Avg Confidence</div>
+      <div class="tv" id="stat-conf">0%</div>
+      <div class="ts">average detection score</div>
+    </div>
+    <div class="card s-tile" style="--tile-grad:linear-gradient(135deg,#8b5cf6,#ec4899);--tile-glow:rgba(139,92,246,0.1);">
+      <div class="tl">Frames Analyzed</div>
+      <div class="tv" id="stat-frames">0</div>
+      <div class="ts">webcam frames processed</div>
+    </div>
+  </div>
+
+  <!-- Features -->
+  <div class="sec-h">Capabilities</div>
+  <div class="feat-grid stagger mb-3">
+    <a href="image.html" class="card feat-card glow">
+      <div class="feat-ico">🖼</div>
+      <h3>Image Detection</h3>
+      <p>Upload any image. Get annotated results with bounding boxes, confidence scores. Export CSV or JSON.</p>
+      <span class="feat-arr">Open →</span>
+    </a>
+    <a href="webcam.html" class="card feat-card glow">
+      <div class="feat-ico">📷</div>
+      <h3>Live Webcam</h3>
+      <p>Real-time detection via WebSocket at up to 10 FPS. Canvas overlay with live bounding boxes.</p>
+      <span class="feat-arr">Open →</span>
+    </a>
+    <a href="batch.html" class="card feat-card glow">
+      <div class="feat-ico">📦</div>
+      <h3>Batch Mode</h3>
+      <p>Upload up to 50 images at once. Process all with GPU and export a combined results CSV.</p>
+      <span class="feat-arr">Open →</span>
+    </a>
+    <a href="models.html" class="card feat-card glow">
+      <div class="feat-ico">🧠</div>
+      <h3>4 Models</h3>
+      <p>YOLOv8 X / L / M / S. Switch live. XL gives maximum accuracy, S gives maximum speed.</p>
+      <span class="feat-arr">Compare →</span>
+    </a>
+    <div class="card feat-card" style="cursor:default;">
+      <div class="feat-ico" style="background:linear-gradient(135deg,#10b981,#06b6d4);box-shadow:0 0 20px rgba(16,185,129,0.3);">🌍</div>
+      <h3>Universal Classes</h3>
+      <p>Not limited to 80 COCO classes. Detects animals, vehicles, everyday objects, food, tools — anything.</p>
+    </div>
+    <a href="about.html" class="card feat-card glow">
+      <div class="feat-ico" style="background:linear-gradient(135deg,#f59e0b,#ec4899);box-shadow:0 0 20px rgba(245,158,11,0.3);">⚡</div>
+      <h3>GPU Accelerated</h3>
+      <p>fp16 mixed precision on RTX 3050. CUDA 12.1. Inference in milliseconds not seconds.</p>
+      <span class="feat-arr">Learn More →</span>
+    </a>
+  </div>
+
+  <!-- System -->
+  <div class="sec-h">System Status</div>
+  <div class="card" style="padding:1.25rem;" id="sys-card">
+    <p class="t2 text-sm">Loading system info…</p>
+  </div>
+
+</main>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script>
+  UI.initNav();UI.initTheme();UI.initGpuBadge();UI.initSidebarStats();
+  async function refresh(){try{const s=await API.getStats();UI.updateStats(s);}catch{}}
+  refresh();setInterval(refresh,5000);
+
+  async function loadSys(){
+    const el=document.getElementById('sys-card');
+    try{
+      const h=await API.checkHealth(3);
+      el.innerHTML=`
+        <div class="flex gap-2 ai-c fw" style="gap:2rem;">
+          <div>
+            <div style="display:flex;flex-direction:column;gap:0.3rem;">
+              <div class="flex ai-c gap-1"><span class="t3 text-xs mono" style="width:70px;">STATUS</span><span style="color:#10b981;font-weight:700;font-size:0.82rem;">● ${h.status.toUpperCase()}</span></div>
+              <div class="flex ai-c gap-1"><span class="t3 text-xs mono" style="width:70px;">MODEL</span><span class="mono" style="font-size:0.8rem;color:#a5b4fc;">${h.current_model||'—'}</span></div>
+              <div class="flex ai-c gap-1"><span class="t3 text-xs mono" style="width:70px;">DEVICE</span><span class="mono" style="font-size:0.8rem;">${(h.device||'—').toUpperCase()}</span></div>
+              <div class="flex ai-c gap-1"><span class="t3 text-xs mono" style="width:70px;">CUDA</span><span class="mono" style="font-size:0.8rem;">${h.cuda_version||'N/A'}</span></div>
+            </div>
+          </div>
+          <div>
+            <div class="text-xs t3" style="margin-bottom:0.3rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">GPU</div>
+            <div style="font-weight:800;font-size:1.1rem;background:var(--grad-green);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">${h.gpu_name||'CPU Mode'}</div>
+            <div class="text-xs t3" style="margin-top:0.2rem;">${h.gpu_available?'fp16 mixed precision · CUDA active':'CPU only — install CUDA for GPU acceleration'}</div>
+          </div>
+        </div>`;
+    }catch{
+      el.innerHTML='<p style="color:#ef4444;font-size:0.85rem;">⚠ Backend offline — run: python -m uvicorn main:app --host 0.0.0.0 --port 8000</p>';
+    }
+  }
+  loadSys();
+</script>
+</body>
+</html>

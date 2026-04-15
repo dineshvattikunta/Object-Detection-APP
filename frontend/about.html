@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>About — VisionAI</title>
+<link rel="stylesheet" href="css/style.css"/>
+<link rel="stylesheet" href="css/animations.css"/>
+</head>
+<body>
+<div class="shell">
+<header class="topbar">
+  <a href="index.html" class="t-logo"><div class="logo-gem">V</div><span class="logo-text">VisionAI</span></a>
+  <div class="t-right">
+    <span class="gpu-pill" id="gpu-badge"><span class="g-dot"></span>Checking…</span>
+    <button class="icon-btn" id="theme-btn">☀️</button>
+  </div>
+</header>
+<nav class="sidebar">
+  <span class="s-label">Detection</span>
+  <a href="index.html" class="nav-link"><span class="n-ico">⊞</span>Dashboard</a>
+  <a href="image.html" class="nav-link"><span class="n-ico">🖼</span>Image Detection</a>
+  <a href="webcam.html" class="nav-link"><span class="n-ico">📷</span>Live Webcam</a>
+  <a href="batch.html" class="nav-link"><span class="n-ico">📦</span>Batch Mode</a>
+  <div class="s-divider"></div>
+  <span class="s-label">Reference</span>
+  <a href="models.html" class="nav-link"><span class="n-ico">🧠</span>Models<span class="n-badge">4</span></a>
+  <a href="about.html" class="nav-link active"><span class="n-ico">ℹ</span>About</a>
+  <div class="s-foot">
+    <div class="s-row"><span class="s-key">Detections</span><span class="s-val" id="sb-total">0</span></div>
+    <div class="s-row"><span class="s-key">Frames</span><span class="s-val" id="sb-frames">0</span></div>
+  </div>
+</nav>
+<main class="main">
+  <div class="ph fade-up">
+    <div>
+      <div class="breadcrumb"><span>VisionAI</span> / <span class="bc">About</span></div>
+      <h1>About VisionAI</h1>
+      <p>Architecture, accuracy tips, tech stack and API reference.</p>
+    </div>
+  </div>
+
+  <div class="sec-h">How YOLOv8 Works</div>
+  <p class="text-sm mb-2" style="max-width:680px;color:var(--t2);">YOLO processes the entire image in a single forward pass through a convolutional neural network. YOLOv8 uses an anchor-free detection head with CSPDarknet backbone and PAN-FPN neck for multi-scale object detection.</p>
+  <div class="pipeline mb-3 fade-up">
+    <div class="p-step"><span>🖼</span><strong>Input</strong><br/><span class="text-xs t3">640×640px</span></div>
+    <div class="p-arr">→</div>
+    <div class="p-step"><span>🔲</span><strong>Backbone</strong><br/><span class="text-xs t3">CSPDarknet</span></div>
+    <div class="p-arr">→</div>
+    <div class="p-step"><span>🔗</span><strong>Neck</strong><br/><span class="text-xs t3">PAN-FPN</span></div>
+    <div class="p-arr">→</div>
+    <div class="p-step"><span>🎯</span><strong>Head</strong><br/><span class="text-xs t3">Anchor-free</span></div>
+    <div class="p-arr">→</div>
+    <div class="p-step"><span>✅</span><strong>NMS</strong><br/><span class="text-xs t3">Final boxes</span></div>
+  </div>
+
+  <div class="sec-h">Accuracy Tips</div>
+  <div class="tip mb-1">
+    <h4>🎯 Use confidence 25–35% for best results</h4>
+    <p>Default 50% is too high and misses many objects. Set to 25–30% to catch everything. The model will show more detections including lower-confidence ones.</p>
+  </div>
+  <div class="tip green mb-1">
+    <h4>✅ Always use yolov8x for images</h4>
+    <p>Extra Large has the highest mAP (53.9%). For webcam use yolov8s for speed. Never use Small for important image detections.</p>
+  </div>
+  <div class="tip warm mb-3">
+    <h4>⚡ Why lion = dog? Why pen = toothbrush?</h4>
+    <p>The pretrained model knows 80 COCO classes. Lion and deer are NOT in COCO. It maps similar shapes — lion body → dog, pen shape → toothbrush. To fix this properly, you need to train on a wildlife/custom dataset. The current model is the best available without custom training.</p>
+  </div>
+
+  <div class="sec-h">Tech Stack</div>
+  <div class="feat-grid stagger mb-3">
+    <div class="card feat-card" style="cursor:default;"><div class="feat-ico">🐍</div><h3>Python 3.11</h3><p class="text-sm">FastAPI · Uvicorn · asyncio</p></div>
+    <div class="card feat-card" style="cursor:default;"><div class="feat-ico">⚡</div><h3>YOLOv8X</h3><p class="text-sm">Ultralytics · fp16 · CUDA 12.1 · 68M params</p></div>
+    <div class="card feat-card" style="cursor:default;"><div class="feat-ico">🎨</div><h3>OpenCV</h3><p class="text-sm">Annotation · base64 · bounding boxes</p></div>
+    <div class="card feat-card" style="cursor:default;"><div class="feat-ico">🌐</div><h3>Vanilla JS</h3><p class="text-sm">REST API · WebSocket · Canvas overlay</p></div>
+    <div class="card feat-card" style="cursor:default;"><div class="feat-ico">🔥</div><h3>PyTorch</h3><p class="text-sm">torch 2.3.0+cu121 · CUDA backend</p></div>
+    <div class="card feat-card" style="cursor:default;"><div class="feat-ico">🎮</div><h3>RTX 3050</h3><p class="text-sm">4GB VRAM · fp16 precision · CUDA 12.1</p></div>
+  </div>
+
+  <div class="sec-h">API Reference</div>
+  <div class="t-wrap mb-3">
+    <table>
+      <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td style="color:#10b981;" class="mono">GET</td><td class="grad-text mono">/health</td><td>Backend status, GPU, model</td></tr>
+        <tr><td style="color:#10b981;" class="mono">GET</td><td class="grad-text mono">/models</td><td>Available models with ratings</td></tr>
+        <tr><td style="color:#10b981;" class="mono">GET</td><td class="grad-text mono">/stats</td><td>Session stats and counters</td></tr>
+        <tr><td style="color:#f59e0b;" class="mono">POST</td><td class="grad-text mono">/detect/image</td><td>Image detection — multipart form</td></tr>
+        <tr><td style="color:#8b5cf6;" class="mono">WS</td><td class="grad-text mono">/detect/webcam</td><td>Live webcam over WebSocket</td></tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+</div>
+<script src="js/api.js"></script><script src="js/ui.js"></script>
+<script>UI.initNav();UI.initTheme();UI.initGpuBadge();UI.initSidebarStats();</script>
+</body>
+</html>

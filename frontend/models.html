@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Models — VisionAI</title>
+<link rel="stylesheet" href="css/style.css"/>
+<link rel="stylesheet" href="css/animations.css"/>
+</head>
+<body>
+<div class="shell">
+<header class="topbar">
+  <a href="index.html" class="t-logo"><div class="logo-gem">V</div><span class="logo-text">VisionAI</span></a>
+  <div class="t-right">
+    <span class="gpu-pill" id="gpu-badge"><span class="g-dot"></span>Checking…</span>
+    <button class="icon-btn" id="theme-btn">☀️</button>
+  </div>
+</header>
+<nav class="sidebar">
+  <span class="s-label">Detection</span>
+  <a href="index.html" class="nav-link"><span class="n-ico">⊞</span>Dashboard</a>
+  <a href="image.html" class="nav-link"><span class="n-ico">🖼</span>Image Detection</a>
+  <a href="webcam.html" class="nav-link"><span class="n-ico">📷</span>Live Webcam</a>
+  <a href="batch.html" class="nav-link"><span class="n-ico">📦</span>Batch Mode</a>
+  <div class="s-divider"></div>
+  <span class="s-label">Reference</span>
+  <a href="models.html" class="nav-link active"><span class="n-ico">🧠</span>Models<span class="n-badge">4</span></a>
+  <a href="about.html" class="nav-link"><span class="n-ico">ℹ</span>About</a>
+  <div class="s-foot">
+    <div class="s-row"><span class="s-key">Detections</span><span class="s-val" id="sb-total">0</span></div>
+    <div class="s-row"><span class="s-key">Frames</span><span class="s-val" id="sb-frames">0</span></div>
+  </div>
+</nav>
+<main class="main">
+  <div class="ph fade-up">
+    <div>
+      <div class="breadcrumb"><span>VisionAI</span> / <span class="bc">Models</span></div>
+      <h1>Model Selection</h1>
+      <p>4 YOLOv8 variants — from maximum accuracy to maximum speed.</p>
+    </div>
+  </div>
+
+  <div class="tip mb-2 fade-up">
+    <h4>💡 Best accuracy tip</h4>
+    <p>Use <strong>yolov8x</strong> (Extra Large) for images — it's the most powerful. Confidence at <strong>25–35%</strong> catches more objects. For webcam, use <strong>yolov8s</strong> for real-time speed.</p>
+  </div>
+
+  <div class="feat-grid stagger mb-3">
+    <a href="image.html" class="card feat-card glow">
+      <div class="feat-ico" style="background:linear-gradient(135deg,#ec4899,#8b5cf6);box-shadow:0 0 20px rgba(236,72,153,0.3);">🏆</div>
+      <h3>YOLOv8 Extra Large</h3>
+      <p style="font-size:0.78rem;margin-bottom:0.75rem;">Maximum accuracy. Best for uploaded images.</p>
+      <div style="font-size:0.78rem;display:flex;flex-direction:column;gap:0.28rem;">
+        <div class="flex jc-b"><span class="t3">mAP COCO</span><span style="color:#10b981;font-weight:700;font-family:var(--mono);">53.9%</span></div>
+        <div class="flex jc-b"><span class="t3">Parameters</span><span class="mono">68.2M</span></div>
+        <div class="flex jc-b"><span class="t3">GPU Speed</span><span class="mono">11.2ms</span></div>
+        <div class="flex jc-b"><span class="t3">File</span><span class="mono">yolov8x.pt</span></div>
+      </div>
+      <div style="margin-top:0.875rem;">
+        <div class="text-xs t3" style="margin-bottom:0.25rem;">Accuracy</div>
+        <div style="height:4px;background:var(--bg-4);border-radius:2px;"><div style="height:100%;width:100%;background:linear-gradient(90deg,#ec4899,#8b5cf6);border-radius:2px;"></div></div>
+        <div class="text-xs t3" style="margin-top:0.5rem;margin-bottom:0.25rem;">Speed</div>
+        <div style="height:4px;background:var(--bg-4);border-radius:2px;"><div style="height:100%;width:40%;background:linear-gradient(90deg,#f59e0b,#ec4899);border-radius:2px;"></div></div>
+      </div>
+      <span class="feat-arr">Use for Images →</span>
+    </a>
+    <a href="image.html" class="card feat-card glow">
+      <div class="feat-ico">🎯</div>
+      <h3>YOLOv8 Large</h3>
+      <p style="font-size:0.78rem;margin-bottom:0.75rem;">High accuracy, faster than XL.</p>
+      <div style="font-size:0.78rem;display:flex;flex-direction:column;gap:0.28rem;">
+        <div class="flex jc-b"><span class="t3">mAP COCO</span><span style="color:#10b981;font-weight:700;font-family:var(--mono);">52.9%</span></div>
+        <div class="flex jc-b"><span class="t3">Parameters</span><span class="mono">43.7M</span></div>
+        <div class="flex jc-b"><span class="t3">GPU Speed</span><span class="mono">8.1ms</span></div>
+        <div class="flex jc-b"><span class="t3">File</span><span class="mono">yolov8l.pt</span></div>
+      </div>
+      <div style="margin-top:0.875rem;">
+        <div class="text-xs t3" style="margin-bottom:0.25rem;">Accuracy</div>
+        <div style="height:4px;background:var(--bg-4);border-radius:2px;"><div style="height:100%;width:88%;background:var(--grad-main);border-radius:2px;"></div></div>
+        <div class="text-xs t3" style="margin-top:0.5rem;margin-bottom:0.25rem;">Speed</div>
+        <div style="height:4px;background:var(--bg-4);border-radius:2px;"><div style="height:100%;width:55%;background:var(--grad-cool);border-radius:2px;"></div></div>
+      </div>
+      <span class="feat-arr">Good Balance →</span>
+    </a>
+    <a href="image.html" class="card feat-card glow">
+      <div class="feat-ico" style="background:var(--grad-green);box-shadow:var(--glow-green);">⚖</div>
+      <h3>YOLOv8 Medium</h3>
+      <p style="font-size:0.78rem;margin-bottom:0.75rem;">Balanced speed and accuracy.</p>
+      <div style="font-size:0.78rem;display:flex;flex-direction:column;gap:0.28rem;">
+        <div class="flex jc-b"><span class="t3">mAP COCO</span><span style="color:#10b981;font-weight:700;font-family:var(--mono);">50.2%</span></div>
+        <div class="flex jc-b"><span class="t3">Parameters</span><span class="mono">25.9M</span></div>
+        <div class="flex jc-b"><span class="t3">GPU Speed</span><span class="mono">5.1ms</span></div>
+        <div class="flex jc-b"><span class="t3">File</span><span class="mono">yolov8m.pt</span></div>
+      </div>
+      <div style="margin-top:0.875rem;">
+        <div class="text-xs t3" style="margin-bottom:0.25rem;">Accuracy</div>
+        <div style="height:4px;background:var(--bg-4);border-radius:2px;"><div style="height:100%;width:74%;background:var(--grad-green);border-radius:2px;"></div></div>
+        <div class="text-xs t3" style="margin-top:0.5rem;margin-bottom:0.25rem;">Speed</div>
+        <div style="height:4px;background:var(--bg-4);border-radius:2px;"><div style="height:100%;width:72%;background:var(--grad-green);border-radius:2px;"></div></div>
+      </div>
+      <span class="feat-arr">Balanced →</span>
+    </a>
+    <a href="webcam.html" class="card feat-card glow">
+      <div class="feat-ico" style="background:var(--grad-warm);box-shadow:0 0 20px rgba(245,158,11,0.3);">⚡</div>
+      <h3>YOLOv8 Small</h3>
+      <p style="font-size:0.78rem;margin-bottom:0.75rem;">Fastest. Best for live webcam.</p>
+      <div style="font-size:0.78rem;display:flex;flex-direction:column;gap:0.28rem;">
+        <div class="flex jc-b"><span class="t3">mAP COCO</span><span style="color:#10b981;font-weight:700;font-family:var(--mono);">44.9%</span></div>
+        <div class="flex jc-b"><span class="t3">Parameters</span><span class="mono">11.2M</span></div>
+        <div class="flex jc-b"><span class="t3">GPU Speed</span><span class="mono">2.4ms</span></div>
+        <div class="flex jc-b"><span class="t3">File</span><span class="mono">yolov8s.pt</span></div>
+      </div>
+      <div style="margin-top:0.875rem;">
+        <div class="text-xs t3" style="margin-bottom:0.25rem;">Accuracy</div>
+        <div style="height:4px;background:var(--bg-4);border-radius:2px;"><div style="height:100%;width:50%;background:var(--grad-warm);border-radius:2px;"></div></div>
+        <div class="text-xs t3" style="margin-top:0.5rem;margin-bottom:0.25rem;">Speed</div>
+        <div style="height:4px;background:var(--bg-4);border-radius:2px;"><div style="height:100%;width:98%;background:var(--grad-warm);border-radius:2px;"></div></div>
+      </div>
+      <span class="feat-arr">Use for Webcam →</span>
+    </a>
+  </div>
+
+  <div class="sec-h">Full Comparison</div>
+  <div class="t-wrap mb-3">
+    <table>
+      <thead><tr><th>Model</th><th>mAP50-95</th><th>Params</th><th>FLOPs</th><th>A100 Speed</th><th>Best For</th></tr></thead>
+      <tbody>
+        <tr><td><span class="grad-text mono bold">yolov8x</span></td><td style="color:#10b981;" class="mono">53.9%</td><td class="mono">68.2M</td><td class="mono">257.8G</td><td class="mono">11.2ms</td><td>Images — max accuracy</td></tr>
+        <tr><td><span class="grad-text mono bold">yolov8l</span></td><td style="color:#10b981;" class="mono">52.9%</td><td class="mono">43.7M</td><td class="mono">165.2G</td><td class="mono">8.1ms</td><td>Images — high accuracy</td></tr>
+        <tr><td><span class="grad-text mono bold">yolov8m</span></td><td style="color:#10b981;" class="mono">50.2%</td><td class="mono">25.9M</td><td class="mono">78.9G</td><td class="mono">5.1ms</td><td>Balanced use</td></tr>
+        <tr><td><span class="grad-text mono bold">yolov8s</span></td><td style="color:#10b981;" class="mono">44.9%</td><td class="mono">11.2M</td><td class="mono">28.6G</td><td class="mono">2.4ms</td><td>Live webcam</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="flex gap-1 fw">
+    <a href="image.html" class="btn btn-main">🖼 Image with XL</a>
+    <a href="webcam.html" class="btn btn-green">📷 Webcam with S</a>
+    <a href="batch.html" class="btn btn-outline">📦 Batch with L</a>
+  </div>
+</main>
+</div>
+<script src="js/api.js"></script><script src="js/ui.js"></script>
+<script>UI.initNav();UI.initTheme();UI.initGpuBadge();UI.initSidebarStats();</script>
+</body>
+</html>
