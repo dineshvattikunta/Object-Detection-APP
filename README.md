@@ -56,7 +56,9 @@ pip install -r requirements.txt
 
 ```cmd
 cd VisionAI\backend
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
+python -m uvicorn main:app --reload --host 0.0.0.0 --port 8000
+frontend 
+python -m http.server 3000
 ```
 
 On first run, Ultralytics will automatically download `yolov8l.pt` (~87 MB) from the internet and cache it. Subsequent starts are instant.
